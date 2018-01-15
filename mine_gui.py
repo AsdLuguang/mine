@@ -183,4 +183,4 @@ class mine_gui():
         if column not in range(self.mine.column): return None
         return (row, column)
 
-mine_gui()
+mine_gui(20, 20, 20)
