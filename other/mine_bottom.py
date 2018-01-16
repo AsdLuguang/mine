@@ -29,11 +29,11 @@ class mine_bottom:
             self.data[ch // self.row][ch % self.column] = 9
             temp.remove(ch)
 
-        self.set_all_auto()
-
         ''' 防止第一次点到雷 '''
-        self.init = True
         self.backNum = random.choice(temp)
+        self.init = True
+
+        self.set_all_auto()
 
     ''' 检测参数的合法性 '''
     def check(self, row, column):
