@@ -12,6 +12,8 @@ status:
 import random
 from mine_bottom import mine_bottom
 
+DATA_UNKNOW = 10
+
 STATUS_CLOSE_NOTHING = 0
 STATUS_FLAG = 1
 STATUS_QUERY = 2
@@ -19,46 +21,36 @@ STATUS_OPEN = 9
 
 class mine_top(mine_bottom):
     def __init__(self, row = 9, column = 9, mineNum = 10):
-        mine_bottom.__init__(self, row, column, mineNum)
+        self.mine_base = mine_bottom(row, column, mineNum)
 
-        self.status = []
-        for i in range(self.row):
-            self.status.append([])
-            for j in range(self.column):
-                self.status[i].append(STATUS_CLOSE_NOTHING)
+    def FirstTimeOpen(self, row, column):
+        if self.Open(row, column):
+            self.mine_base.FirstIsMine(row, column)
+            return True
+        return False
 
     def Open(self, row, column):
-        if not self.Check(row, column): return False
         if self.IsOpen(row, column): return False
-        ''' 这个限制不在一个层次处理 '''
-        ''' if self.GetOneStatus(row, column) == STATUS_FLAG: return False '''
-
-        self.SetOneStatus(row, column, STATUS_FLAG)
+        if self.IsFlag(row, column): return False
+        self.mine_base.SetOneStatus(row, column, STATUS_OPEN)
         return True
 
     def SetFlag(self, row, column, status):
-        if not self.Check(row, column): return False
         if self.IsOpen(row, column): return False
-        if status != STATUS_CLOSE_NOTHING and status != STATUS_FLAG and status != STATUS_QUERY:
-            return False
-
-        self.SetOneStatus(row, column, status)
+        self.mine_base.SetOneStatus(row, column, status)
         return True
 
     def GetOneStatus(self, row, column):
-        return self.status[row][column]
-    def SetOneStatus(self, row, column, status):
-        self.status[row][column] = status
+        return self.mine_base.GetOneStatus(row, column)
+    def GetOneData(self, row, column):
+        if self.IsOpen(row, column): return self.mine_base.GetOneData(row, column)
+        else return DATA_UNKNOW
     def IsOpen(self, row, column):
-        return self.status[row][column] == STATUS_OPEN
+        return self.mine_base.GetOneStatus(row, column) == STATUS_OPEN
+    def IsFlag(self, row, column):
+        return self.mine_base.GetOneStatus(row, column) == STATUS_FLAG
 
-    def Show(self):
-        mine_bottom.Show(self)
-        print("===========================")
-        for i in range(self.row):
-            for j in range(self.column):
-                print('%2d' % self.GetOneStatus(i, j), end = ' ')
-            print()
+    def Show(self): self.mine_base.Show()
 
 if __name__ == '__main__':
     a = mine_top(20, 20, 20)
