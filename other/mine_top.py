@@ -20,18 +20,25 @@ STATUS_QUERY = 2
 STATUS_OPEN = 9
 
 class mine_top(mine_bottom):
-    def __init__(self, row = 9, column = 9, mineNum = 10):
+    def __init__(self, row = 9, column = 9, mineNum = 10, easymode = True):
         self.mine_base = mine_bottom(row, column, mineNum)
+        self.easymode = easymode
+        self.FirstTimeOpen = True
 
-    def FirstTimeOpen(self, row, column):
-        if self.Open(row, column):
-            self.mine_base.FirstIsMine(row, column)
-            return True
-        return False
+#    def FirstTimeOpen(self, row, column):
+#        if self.Open(row, column):
+#            if self.easymode: self.mine_base.FirstIsMine(row, column)
+#            return True
+#        else:
+#            return False
 
     def Open(self, row, column):
         if self.IsOpen(row, column): return False
         if self.IsFlag(row, column): return False
+        if self.easymode:
+            if self.FirstTimeOpen == True:
+                self.FirstTimeOpen = False
+                self.mine_base.FirstIsMine(row, column)
         self.mine_base.SetOneStatus(row, column, STATUS_OPEN)
         return True
 
